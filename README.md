@@ -93,6 +93,9 @@ We appreciate the following GitHub repos a lot for their valuable code and effor
 - Stationary (https://github.com/thuml/Nonstationary_Transformers)
 - PatchTST(https://github.com/yuqinie98/patchtst)
 
-## Abstract
+## Contact
 
-The self-attention mechanism in Transformer architecture, invariant to sequence order, necessitates positional embeddings to encode temporal order in time series prediction. We argue that this reliance on positional embeddings restricts the Transformer's ability to effectively represent temporal sequences, particularly when employing longer lookback windows. To address this, we introduce an innovative approach that combines Pyramid RNN embeddings(PRE) for univariate time series with the Transformer's capability to model multivariate dependencies. PRE, utilizing pyramidal one-dimensional convolutional layers, constructs multiscale convolutional features that preserve temporal order. Additionally, RNNs, layered atop these features, learn multiscale time series representations sensitive to sequence order. This integration into Transformer models with attention mechanisms results in significant performance enhancements. We present the PRformer, a model integrating PRE with a standard Transformer encoder, demonstrating state-of-the-art performance on various real-world datasets. This performance highlights the effectiveness of our approach in leveraging longer lookback windows and underscores the critical role of robust temporal representations in maximizing Transformer's potential for prediction tasks.
+If you have any questions or want to use the code, feel free to contact:
+
+- Yongbo Yu ([yongboyu@mail.nwpu.edu.cn](mailto:yongboyu@mail.nwpu.edu.cn))
+
