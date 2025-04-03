@@ -285,7 +285,10 @@ class Dataset_Custom(Dataset):
         return len(self.data_x) - self.seq_len - self.pred_len + 1
 
     def inverse_transform(self, data):
-        return self.scaler.inverse_transform(data)
+        original_shape = data.shape
+        data = data.reshape(-1, original_shape[-1])
+        data = self.scaler.inverse_transform(data)
+        return data.reshape(original_shape)
 
 
 class Dataset_PEMS(Dataset):
