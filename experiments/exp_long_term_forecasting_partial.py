@@ -121,6 +121,10 @@ class Exp_Long_Term_Forecast_Partial(Exp_Basic):
 
         if self.args.use_amp:
             scaler = torch.cuda.amp.GradScaler()
+            
+        train_losses = []
+        vali_losses = []
+        test_losses = []
 
         for epoch in range(self.args.train_epochs):
             iter_count = 0
@@ -215,6 +219,10 @@ class Exp_Long_Term_Forecast_Partial(Exp_Basic):
             train_loss = np.average(train_loss)
             vali_loss = self.vali(vali_data, vali_loader, criterion, partial_train=True)
             test_loss = self.vali(test_data, test_loader, criterion, partial_train=False)
+            
+            train_losses.append(train_loss)
+            vali_losses.append(vali_loss)
+            test_losses.append(test_loss)
 
             print("Epoch: {0}, Steps: {1} | Train Loss: {2:.7f} Vali Loss: {3:.7f} Test Loss: {4:.7f}".format(
                 epoch + 1, train_steps, train_loss, vali_loss, test_loss))
@@ -225,6 +233,15 @@ class Exp_Long_Term_Forecast_Partial(Exp_Basic):
 
             adjust_learning_rate(model_optim, epoch + 1, self.args)
 
+        loss_path = os.path.join(path, 'loss_history.npz')
+        np.savez(
+            loss_path,
+            train_losses=np.array(train_losses),
+            vali_losses=np.array(vali_losses),
+            test_losses=np.array(test_losses),
+            epoch=np.arange(1, len(train_losses) + 1)
+         )
+        
         best_model_path = path + '/' + 'checkpoint.pth'
         self.model.load_state_dict(torch.load(best_model_path))
 

@@ -103,6 +103,10 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         if self.args.use_amp:
             scaler = torch.cuda.amp.GradScaler()
 
+        train_losses = []
+        vali_losses = []
+        test_losses = []
+
         for epoch in range(self.args.train_epochs):
             iter_count = 0
             train_loss = []
@@ -171,7 +175,12 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             train_loss = np.average(train_loss)
             vali_loss = self.vali(vali_data, vali_loader, criterion)
             test_loss = self.vali(test_data, test_loader, criterion)
-            if self.args.__contains__('trial'):
+
+            train_losses.append(train_loss)
+            vali_losses.append(vali_loss)
+            test_losses.append(test_loss)
+
+            if hasattr(self.args, 'trial'):
                 self.args.trial.report(test_loss, epoch) #optune参数报告
 
             print("Epoch: {0}, Steps: {1} | Train Loss: {2:.7f} Vali Loss: {3:.7f} Test Loss: {4:.7f}".format(
@@ -185,6 +194,15 @@ class Exp_Long_Term_Forecast(Exp_Basic):
             adjust_learning_rate(model_optim, epoch + 1, self.args)
 
             # get_cka(self.args, setting, self.model, train_loader, self.device, epoch)
+
+        loss_path = os.path.join(path, 'loss_history.npz')
+        np.savez(
+            loss_path,
+            train_losses=np.array(train_losses),
+            vali_losses=np.array(vali_losses),
+            test_losses=np.array(test_losses),
+            epochs=np.arange(1, len(train_losses) + 1)
+        )
 
         best_model_path = path + '/' + 'checkpoint.pth'
         self.model.load_state_dict(torch.load(best_model_path))
