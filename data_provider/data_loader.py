@@ -191,7 +191,8 @@ class Dataset_ETT_minute(Dataset):
 class Dataset_Custom(Dataset):
     def __init__(self, root_path, flag='train', size=None,
                  features='S', data_path='ETTh1.csv',
-                 target='OT', scale=True, timeenc=0, freq='h', seasonal_patterns=None):
+                 target='OT', scale=True, timeenc=0, freq='h',
+                 train_ratio=0.7, test_ratio=0.2, seasonal_patterns=None):
         # size [seq_len, label_len, pred_len]
         # info
         if size == None:
@@ -212,6 +213,8 @@ class Dataset_Custom(Dataset):
         self.scale = scale
         self.timeenc = timeenc
         self.freq = freq
+        self.train_ratio = train_ratio
+        self.test_ratio = test_ratio
 
         self.root_path = root_path
         self.data_path = data_path
@@ -231,8 +234,8 @@ class Dataset_Custom(Dataset):
             cols.remove(self.target)
             cols.remove('date')
             df_raw = df_raw[['date'] + cols + [self.target]]
-        num_train = int(len(df_raw) * 0.7)
-        num_test = int(len(df_raw) * 0.2)
+        num_train = int(len(df_raw) * self.train_ratio)
+        num_test = int(len(df_raw) * self.test_ratio)
         num_vali = len(df_raw) - num_train - num_test
         border1s = [0, num_train - self.seq_len, len(df_raw) - num_test - self.seq_len]
         border2s = [num_train, num_train + num_vali, len(df_raw)]

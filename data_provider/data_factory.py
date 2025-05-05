@@ -35,8 +35,11 @@ def data_provider(args, flag):
         size=[args.seq_len, args.label_len, args.pred_len],
         features=args.features,
         target=args.target,
+        scale=args.scale,
         timeenc=timeenc,
         freq=freq,
+        train_ratio=args.train_ratio,
+        test_ratio=args.test_ratio,
         seasonal_patterns=args.seasonal_patterns
     )
     print(flag, len(data_set))

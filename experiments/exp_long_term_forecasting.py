@@ -84,6 +84,11 @@ class Exp_Long_Term_Forecast(Exp_Basic):
         return total_loss
 
     def train(self, setting):
+        print("Normalization: ", self.args.scale)
+        print("Train ratio: ", self.args.train_ratio)
+        print("Vali ratio: ", round(1.0 - self.args.train_ratio - self.args.test_ratio, 10))
+        print("Test ratio: ", self.args.test_ratio)
+
         train_data, train_loader = self._get_data(flag='train')
         vali_data, vali_loader = self._get_data(flag='val')
         test_data, test_loader = self._get_data(flag='test')
